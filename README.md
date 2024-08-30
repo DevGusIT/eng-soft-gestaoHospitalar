@@ -23,18 +23,18 @@ Esta aplicação web foi desenvolvida para gerenciar as operações de um hospit
 1. Clone este repositório:
 
    ```bash
-   git clone https://github.com/DevGusIT/eng-soft-gestaoHospitalar.io
+   git clone https://github.com/DevGusIT/eng-soft-gestaoHospitalar.git
    ```
 
 2. Navegue até o diretório do projeto:
 
    ```bash
-   cd eng-soft-gestaoHospitalar.io
+   cd eng-soft-gestaoHospitalar.git
    ```
 
 3. Configure o ambiente de desenvolvimento, garantindo que você tenha o servidor PHP e um banco de dados compatível.
 
-4. Importe o banco de dados (se aplicável) e ajuste as configurações de conexão no arquivo de configuração do projeto.
+4. Importe o banco de dados e ajuste de acordo com as configurações de conexão no arquivo de configuração do projeto.
 
 5. Inicie o servidor local para testar a aplicação.
 
