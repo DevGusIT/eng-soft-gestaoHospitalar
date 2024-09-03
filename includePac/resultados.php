@@ -5,7 +5,8 @@ include('../DAO/protect.php');
 
 $idPaciente = $_SESSION['idpacientes'];
 
-function exibirRelatorios($mysqli, $idPaciente) {
+function exibirRelatorios($mysqli, $idPaciente)
+{
     $sql = "SELECT pacientes.nome, agendamento.tipo_agendamento, agendamento.data_agendamento, relatorios.relatorio
             FROM pacientes
             LEFT JOIN agendamento ON pacientes.idpacientes = agendamento.id_paciente_agendamento
@@ -18,9 +19,9 @@ function exibirRelatorios($mysqli, $idPaciente) {
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
             echo "<tr>";
-            echo "<td>" . $row["nome"] . "</td>";
-            echo "<td>" . $row["tipo_agendamento"] . "</td>";
-            echo "<td>" . $row["data_agendamento"] . "</td>";
+            echo "<td>" . htmlspecialchars($row["nome"], ENT_QUOTES, 'UTF-8') . "</td>";
+            echo "<td>" . htmlspecialchars($row["tipo_agendamento"], ENT_QUOTES, 'UTF-8') . "</td>";
+            echo "<td>" . htmlspecialchars($row["data_agendamento"], ENT_QUOTES, 'UTF-8') . "</td>";
             echo "<td><a href='#' class='ver-relatorio' data-relatorio='" . htmlspecialchars($row["relatorio"], ENT_QUOTES, 'UTF-8') . "'>Exibir</a></td>";
             echo "</tr>";
         }
@@ -34,30 +35,32 @@ function exibirRelatorios($mysqli, $idPaciente) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Morello - Portal do Paciente</title>
 
     <style>
-        /* Estilos */
         @import url('https://fonts.googleapis.com/css?family=Poppins:400,700,900');
 
         * {
-            margin: 0px;
-            padding: 0px; 
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
             list-style: none;
             text-decoration: none;
         }
-        .recuo{
-            margin-top: 10px;
-            background-color: #74AFB2;
+
+        header {
+            background-color: #003366;
+            /* Azul escuro para o cabeçalho */
+            color: #fff;
+            /* Cor do texto no cabeçalho */
         }
-        
-        .navegacao{
-            background-color: rgba(255, 255, 255, 0.904);
+
+        .navegacao {
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -71,8 +74,10 @@ function exibirRelatorios($mysqli, $idPaciente) {
             height: auto;
         }
 
-        .navegacao h1{
-        font-size: 18px;
+        .navegacao h1 {
+            font-size: 18px;
+            color: #fff;
+            /* Branco para contraste com o fundo escuro */
         }
 
         .nav-menu {
@@ -83,7 +88,8 @@ function exibirRelatorios($mysqli, $idPaciente) {
         }
 
         .nav-menu li a {
-            color: black;
+            color: #fff;
+            /* Branco para contraste com o fundo escuro */
             font-size: 15px;
             font-weight: 500;
             text-decoration: none;
@@ -91,17 +97,9 @@ function exibirRelatorios($mysqli, $idPaciente) {
         }
 
         .nav-menu li a:hover {
-            color: brown;
+            color: #0056b3;
+            /* Azul escuro mais claro no hover */
         }
-
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-image: url('../componentes/imagens/agenda_admin_back.jpg'); /* Substitua 'caminho_para_sua_imagem.jpg' pelo caminho da sua imagem de fundo */
-            background-size: cover;
-            background-position: center;
-        } 
 
         .container {
             margin: 20px;
@@ -115,7 +113,8 @@ function exibirRelatorios($mysqli, $idPaciente) {
             text-align: center;
             font-size: 40px;
             margin-bottom: 20px;
-            font-size : 40px
+            color: #003366;
+            /* Azul escuro para o título */
         }
 
         #listar-relatorios {
@@ -127,20 +126,20 @@ function exibirRelatorios($mysqli, $idPaciente) {
             border-collapse: collapse;
         }
 
-        #listar-relatorios th{
+        #listar-relatorios th {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: center;
+            background-color: #003366;
+            /* Azul escuro para cabeçalhos da tabela */
+            color: #fff;
+            /* Branco para contraste com o fundo escuro */
         }
 
-        #listar-relatorios td{
+        #listar-relatorios td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
-        }
-
-        #listar-relatorios th {
-            background-color: #f2f2f2;
         }
 
         #listar-relatorios tr:nth-child(even) {
@@ -151,30 +150,35 @@ function exibirRelatorios($mysqli, $idPaciente) {
             background-color: #f2f2f2;
         }
 
-        /* Estilos da Janela Modal */
         .modal {
-            display: none; /* Oculta a janela modal por padrão */
-            position: fixed; /* Permite que a janela modal flutue sobre o conteúdo da página */
-            z-index: 1; /* Define a ordem de empilhamento */
+            display: none;
+            /* Oculta a janela modal por padrão */
+            position: fixed;
+            /* Permite que a janela modal flutue sobre o conteúdo da página */
+            z-index: 1;
+            /* Define a ordem de empilhamento */
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto; /* Adiciona rolagem se necessário */
-            background-color: rgb(0,0,0); /* Cor de fundo escura */
-            background-color: rgba(0,0,0,0.4); /* Cor de fundo escura com transparência */
+            overflow: auto;
+            /* Adiciona rolagem se necessário */
+            background-color: rgb(0, 0, 0);
+            /* Cor de fundo escura */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Cor de fundo escura com transparência */
         }
 
-        /* Conteúdo da janela modal */
         .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto; /* Centraliza a janela modal verticalmente */
+            background-color: #fff;
+            margin: 15% auto;
+            /* Centraliza a janela modal verticalmente */
             padding: 20px;
             border: 1px solid #888;
-            width: 80%; /* Define a largura da janela modal */
+            width: 80%;
+            /* Define a largura da janela modal */
         }
 
-        /* Botão de fechar */
         .fechar-modal {
             color: #aaa;
             float: right;
@@ -189,15 +193,13 @@ function exibirRelatorios($mysqli, $idPaciente) {
             cursor: pointer;
         }
 
-        /* Efeito ao passar o mouse sobre os links */
-    .nav-menu li a:hover {
-            color: blue; /* Altere a cor conforme desejado */
-            transition: color 0.3s ease; /* Adiciona uma transição suave de cor */
+        .nav-menu li a:hover {
+            color: #0056b3;
+            /* Azul escuro mais claro */
+            transition: color 0.3s ease;
+            /* Adiciona uma transição suave de cor */
         }
 
-        /* Adicione isso ao seu arquivo style.css */
-
-        /* Efeito de linha ao passar o mouse sobre os links */
         .nav-menu li a {
             position: relative;
         }
@@ -207,9 +209,11 @@ function exibirRelatorios($mysqli, $idPaciente) {
             position: absolute;
             width: 100%;
             height: 2px;
-            bottom: -3px; /* Ajuste conforme necessário */
+            bottom: -3px;
+            /* Ajuste conforme necessário */
             left: 0;
-            background-color: blue; /* Cor da linha */
+            background-color: #0056b3;
+            /* Azul escuro mais claro */
             visibility: hidden;
             transform: scaleX(0);
             transition: all 0.3s ease-in-out;
@@ -221,38 +225,34 @@ function exibirRelatorios($mysqli, $idPaciente) {
         }
 
         .nav-menu li a:hover {
-            color: brown;
-            background-color: rgba(0, 0, 255, 0.1); /* Efeito de fundo ao passar o mouse */
+            color: #003366;
+            /* Azul escuro */
+            background-color: rgba(0, 0, 255, 0.1);
+            /* Efeito de fundo ao passar o mouse */
         }
-
     </style>
 </head>
+
 <body>
 
     <header>
         <div class="recuo"></div>
 
         <nav class="navegacao">
-
-        <img src="../componentes/imagens/logo2.png" alt="logo da empresa Morello com cores azuis" class="logo">
-
+            <img src="../componentes/imagens/logo2.png" alt="logo da empresa Morello com cores azuis" class="logo">
             <h1>Bem vindo ao portal do paciente, <?php echo $_SESSION['nome']; ?>.</h1>
-
             <ul class="nav-menu">
                 <li><a href="../index.html">Nosso Hospital</a></li>
                 <li><a href="portalPaciente.php">Portal do Paciente</a></li>
                 <li><a href="../DAO/logout.php">Sair da Conta</a></li>
             </ul>
-
         </nav>
     </header>
 
     <div class="container">
-
         <h4>Resultados e Relatórios</h4>
 
         <div id="listar-relatorios">
-
             <span id="msgAlerta"></span>
 
             <table>
@@ -266,9 +266,9 @@ function exibirRelatorios($mysqli, $idPaciente) {
                 </thead>
                 <tbody>
                     <?php
-                        // Exibir os relatórios do paciente
-                        exibirRelatorios($mysqli, $idPaciente);
-                        $mysqli->close();
+                    // Exibir os relatórios do paciente
+                    exibirRelatorios($mysqli, $idPaciente);
+                    $mysqli->close();
                     ?>
                 </tbody>
             </table>
@@ -289,7 +289,6 @@ function exibirRelatorios($mysqli, $idPaciente) {
         var modal = document.getElementById("modal");
         var conteudoRelatorio = document.getElementById("conteudo-relatorio");
 
-        // Atualize a seleção de links para que ela funcione depois do carregamento do conteúdo PHP
         document.addEventListener("DOMContentLoaded", function() {
             var linksRelatorio = document.querySelectorAll(".ver-relatorio");
 
@@ -315,4 +314,5 @@ function exibirRelatorios($mysqli, $idPaciente) {
         });
     </script>
 </body>
+
 </html>

@@ -1,170 +1,149 @@
 <?php
-
-    include('../DAO/conexao.php');
-    include('../DAO/protect.php');
-
+include('../DAO/conexao.php');
+include('../DAO/protect.php');
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Morello - Portal do Paciente</title>
 
     <style>
-
         @import url('https://fonts.googleapis.com/css?family=Poppins:400,700,900');
 
         * {
-            margin: 0px;
-            padding: 0px; 
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
-            list-style: none;
             text-decoration: none;
         }
-        .recuo{
-            margin-top: 10px;
-            background-color: #74AFB2;
-        }
-        
-        .navegacao{
-            background-color: rgba(255, 255, 255, 0.904);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 18px 40px;
-            box-shadow: 0 0.1rem 0.5rem #ccc;
-            width: 100%;
-        }
-        /* Efeito ao passar o mouse sobre os links */
-        .nav-menu li a:hover {
-            color: blue; /* Altere a cor conforme desejado */
-            transition: color 0.3s ease; /* Adiciona uma transição suave de cor */
+
+        body {
+            background-color: #f5f7f9;
+            font-family: Arial, sans-serif;
+            color: #333;
         }
 
-        /* Adicione isso ao seu arquivo style.css */
-
-        /* Efeito de linha ao passar o mouse sobre os links */
-        .nav-menu li a {
-            position: relative;
+        header {
+            background-color: #003366;
+            /* Azul escuro */
+            color: #fff;
+            padding: 20px 40px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-
-        .nav-menu li a::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            bottom: -3px; /* Ajuste conforme necessário */
-            left: 0;
-            background-color: blue; /* Cor da linha */
-            visibility: hidden;
-            transform: scaleX(0);
-            transition: all 0.3s ease-in-out;
-        }
-
-        .nav-menu li a:hover::after {
-            visibility: visible;
-            transform: scaleX(1);
-        }
-
-        .nav-menu li a:hover {
-            color: brown;
-            background-color: rgba(0, 0, 255, 0.1); /* Efeito de fundo ao passar o mouse */
-        }
-
 
         .logo {
             width: 50px;
             height: auto;
         }
 
-        .navegacao h1{
-        font-size: 18px;
+        .navegacao {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navegacao h1 {
+            font-size: 18px;
+            margin: 0;
         }
 
         .nav-menu {
             display: flex;
-            justify-content: center;
-            gap: 5rem;
+            gap: 2rem;
             list-style-type: none;
         }
 
         .nav-menu li a {
-            color: black;
+            color: #fff;
             font-size: 15px;
             font-weight: 500;
             text-decoration: none;
-            transition: all 0.5s;
+            position: relative;
+            padding: 5px 0;
+            transition: color 0.3s ease, background-color 0.3s ease;
         }
 
         .nav-menu li a:hover {
-            color: brown;
+            color: #ffddc1;
+            /* Cor clara ao passar o mouse */
+            background-color: rgba(255, 255, 255, 0.2);
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
+        .nav-menu li a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: #ffddc1;
+            /* Linha clara ao passar o mouse */
+            visibility: hidden;
+            transition: width 0.3s ease;
+        }
+
+        .nav-menu li a:hover::after {
+            width: 100%;
+            visibility: visible;
         }
 
         .container {
             max-width: 1200px;
-            margin: 20px auto;
+            margin: 40px auto;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
             flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
         }
 
         .box {
             width: calc(33.33% - 20px);
             background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            margin-bottom: 20px;
+            text-align: center;
             cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .box:hover {
-            transform: translateY(-5px);
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
 
         .box img {
             max-width: 100%;
             height: auto;
+            border-radius: 8px;
+            margin-bottom: 15px;
         }
 
         .box h2 {
-            margin-top: 10px;
-            font-size: 18px;
-            text-align: center;
-            color: black;
+            font-size: 20px;
+            color: #003366;
+            /* Azul escuro */
         }
     </style>
 </head>
+
 <body>
 
     <header>
-        <div class="recuo"></div>
-
-        <nav class="navegacao">
-
+        <div class="navegacao">
             <img src="../componentes/imagens/logo2.png" alt="logo da empresa Morello com cores azuis" class="logo">
-
-            <h1>Bem vindo ao portal do paciente, <?php echo $_SESSION['nome']; ?>.</h1>
-
+            <h1>Bem-vindo ao portal do paciente, <?php echo $_SESSION['nome']; ?>.</h1>
             <ul class="nav-menu">
                 <li><a href="../index.html">Nosso Hospital</a></li>
                 <li><a href="portalPaciente.php">Portal do Paciente</a></li>
                 <li><a href="../DAO/logout.php">Sair da Conta</a></li>
-                
             </ul>
-        </nav>
+        </div>
     </header>
 
     <div class="container">
@@ -185,4 +164,5 @@
     </div>
 
 </body>
+
 </html>

@@ -1,6 +1,6 @@
 <?php
-    include('../DAO/conexao.php');
-    include('../DAO/protect.php');
+include('../DAO/conexao.php');
+include('../DAO/protect.php');
 
 $idpacientes = $_SESSION['idpacientes'];
 
@@ -12,84 +12,84 @@ $query_consultas = "SELECT nome, tipo_agendamento, data_agendamento, hora_agenda
                     ORDER BY data_agendamento DESC";
 
 $resultado = mysqli_query($mysqli, $query_consultas);
-
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Morello - Historico de Consultas</title>
+    <title>Morello - Histórico de Consultas</title>
 
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Poppins:400,700,900');
 
-<style>
-
-    @import url('https://fonts.googleapis.com/css?family=Poppins:400,700,900');
-
-    * {
-        margin: 0px;
-        padding: 0px; 
-        box-sizing: border-box;
-        font-family: 'Poppins', sans-serif;
-        list-style: none;
-        text-decoration: none;
-    }
-    .recuo{
-        margin-top: 10px;
-        background-color: #74AFB2;
-    }
-
-    .navegacao{
-        background-color: rgba(255, 255, 255, 0.904);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 18px 40px;
-        box-shadow: 0 0.1rem 0.5rem #ccc;
-        width: 100%;
-    }
-
-    .logo {
-        width: 50px;
-        height: auto;
-    }
-
-    .navegacao h1{
-    font-size: 18px;
-    }
-
-    .nav-menu {
-        display: flex;
-        justify-content: center;
-        gap: 5rem;
-        list-style-type: none;
-    }
-
-    .nav-menu li a {
-        color: black;
-        font-size: 15px;
-        font-weight: 500;
-        text-decoration: none;
-        transition: all 0.5s;
-    }
-
-    .nav-menu li a:hover {
-        color: brown;
-    }
-
-    /* Efeito ao passar o mouse sobre os links */
-    .nav-menu li a:hover {
-            color: blue; /* Altere a cor conforme desejado */
-            transition: color 0.3s ease; /* Adiciona uma transição suave de cor */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            list-style: none;
+            text-decoration: none;
         }
 
-        /* Adicione isso ao seu arquivo style.css */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
 
-        /* Efeito de linha ao passar o mouse sobre os links */
+        .recuo {
+            margin-top: 10px;
+            background-color: #003366;
+            /* Azul escuro */
+        }
+
+        .navegacao {
+            background-color: #003366;
+            /* Azul escuro */
+            color: #fff;
+            /* Texto branco para contraste */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 40px;
+            box-shadow: 0 0.1rem 0.5rem #ccc;
+            width: 100%;
+        }
+
+        .logo {
+            width: 50px;
+            height: auto;
+        }
+
+        .navegacao h1 {
+            font-size: 18px;
+            color: #fff;
+            /* Texto branco para contraste */
+        }
+
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            gap: 5rem;
+            list-style-type: none;
+        }
+
         .nav-menu li a {
-            position: relative;
+            color: #fff;
+            /* Texto branco para contraste */
+            font-size: 15px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.5s;
+        }
+
+        .nav-menu li a:hover {
+            color: #a0c4ff;
+            /* Azul claro */
         }
 
         .nav-menu li a::after {
@@ -97,9 +97,10 @@ $resultado = mysqli_query($mysqli, $query_consultas);
             position: absolute;
             width: 100%;
             height: 2px;
-            bottom: -3px; /* Ajuste conforme necessário */
+            bottom: -3px;
             left: 0;
-            background-color: blue; /* Cor da linha */
+            background-color: #a0c4ff;
+            /* Azul claro */
             visibility: hidden;
             transform: scaleX(0);
             transition: all 0.3s ease-in-out;
@@ -110,94 +111,97 @@ $resultado = mysqli_query($mysqli, $query_consultas);
             transform: scaleX(1);
         }
 
-        .nav-menu li a:hover {
-            color: brown;
-            background-color: rgba(0, 0, 255, 0.1); /* Efeito de fundo ao passar o mouse */
+        .historico {
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f0f0f0;
-    }
+        .historico h4 {
+            text-align: center;
+            font-size: 40px;
+            margin-bottom: 20px;
+            color: #003366;
+            /* Azul escuro */
+        }
 
-    .historico {
-        margin: 20px;
-        padding: 20px;
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
+        #listar-Pacientes {
+            margin-top: 20px;
+        }
 
-    .historico h4 {
-        text-align: center;
-        font-size: 40px;
-        margin-bottom: 20px;
-        font-size : 40px
-    }
+        #listar-Pacientes table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-    #listar-Pacientes {
-        margin-top: 20px;
-    }
+        #listar-Pacientes th {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+            background-color: #003366;
+            /* Azul escuro */
+            color: #fff;
+            /* Branco para contraste */
+        }
 
-    #listar-Pacientes table {
-        width: 100%;
-        border-collapse: collapse;
-    }
+        #listar-Pacientes td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
 
-    #listar-Pacientes th{
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: center;
-    }
+        #listar-Pacientes tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
 
-    #listar-Pacientes td{
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-    }
+        #listar-Pacientes tr:hover {
+            background-color: #f2f2f2;
+        }
 
-    #listar-Pacientes th {
-        background-color: #f2f2f2;
-    }
+        .btn-excluir {
+            color: #fff;
+            background-color: #e74c3c;
+            /* Vermelho */
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
 
-    #listar-Pacientes tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
+        .btn-excluir img {
+            width: 20px;
+            height: 20px;
+        }
 
-    #listar-Pacientes tr:hover {
-        background-color: #f2f2f2;
-    }
-    
-
+        .btn-excluir:hover {
+            background-color: #c0392b;
+            /* Vermelho mais escuro */
+        }
     </style>
-
 </head>
+
 <body>
 
-    <script src="custom.js"></script>
-    
     <header>
         <div class="recuo"></div>
 
         <nav class="navegacao">
-
-        <img src="../componentes/imagens/logo2.png" alt="logo da empresa Morello com cores azuis" class="logo">
-
-        <h1>Bem vindo ao portal do paciente, <?php echo $_SESSION['nome']; ?>.</h1>
-
-        <ul class="nav-menu">
-            <li><a href="../index.html">Nosso Hospital</a></li>
-            <li><a href="portalPaciente.php">Portal do Paciente</a></li>
-            <li><a href="../DAO/logout.php">Sair da Conta</a></li>
-        </ul>
-
+            <img src="../componentes/imagens/logo2.png" alt="logo da empresa Morello com cores azuis" class="logo">
+            <h1>Bem-vindo ao portal do paciente, <?php echo $_SESSION['nome']; ?>.</h1>
+            <ul class="nav-menu">
+                <li><a href="../index.html">Nosso Hospital</a></li>
+                <li><a href="portalPaciente.php">Portal do Paciente</a></li>
+                <li><a href="../DAO/logout.php">Sair da Conta</a></li>
+            </ul>
         </nav>
     </header>
 
     <div class="historico">
-        <h4>Historico de Consultas</h4>
+        <h4>Histórico de Consultas</h4>
         <span id="msgAlerta"></span>
 
         <div id="listar-Pacientes">
@@ -212,31 +216,30 @@ $resultado = mysqli_query($mysqli, $query_consultas);
                     </tr>
                 </thead>
                 <tbody>
-                <?php
-if ($resultado && mysqli_num_rows($resultado) > 0) {
-    while ($consulta = mysqli_fetch_assoc($resultado)) {
-        echo "<tr>";
-        echo "<td>" . $consulta['nome'] . "</td>";
-        echo "<td>" . $consulta['tipo_agendamento'] . "</td>";
-        echo "<td>" . $consulta['data_agendamento'] . "</td>";
-        echo "<td>" . $consulta['hora_agendamento'] . "</td>";
-        echo "<td> 
-            <a href='excluir_agendamento.php?id_agendamento={$consulta['id_agendamento']}' onclick='return confirm(\"Tem certeza de que deseja excluir este agendamento?\")'>
-                <img src='../componentes/imagens/delete.jpg' alt='Excluir' style='width: 20px; height: 20px;'> <!-- Substitua caminho_para_sua_imagem.png pelo caminho da sua imagem -->
-            </a>
-        </td>";
-        echo "</tr>";
-    }
-} else {
-    echo "<tr><td colspan='5'>Nenhuma consulta encontrada.</td></tr>";
-}
-?>
-
+                    <?php
+                    if ($resultado && mysqli_num_rows($resultado) > 0) {
+                        while ($consulta = mysqli_fetch_assoc($resultado)) {
+                            echo "<tr>";
+                            echo "<td>" . htmlspecialchars($consulta['nome'], ENT_QUOTES, 'UTF-8') . "</td>";
+                            echo "<td>" . htmlspecialchars($consulta['tipo_agendamento'], ENT_QUOTES, 'UTF-8') . "</td>";
+                            echo "<td>" . htmlspecialchars($consulta['data_agendamento'], ENT_QUOTES, 'UTF-8') . "</td>";
+                            echo "<td>" . htmlspecialchars($consulta['hora_agendamento'], ENT_QUOTES, 'UTF-8') . "</td>";
+                            echo "<td>
+                                <a href='excluir_agendamento.php?id_agendamento={$consulta['id_agendamento']}' class='btn-excluir' onclick='return confirm(\"Tem certeza de que deseja excluir este agendamento?\")'>
+                                    <img src='../componentes/imagens/delete.jpg' alt='Excluir'>
+                                </a>
+                            </td>";
+                            echo "</tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='5'>Nenhuma consulta encontrada.</td></tr>";
+                    }
+                    ?>
                 </tbody>
             </table>
         </div>
     </div>
 
-    
 </body>
+
 </html>

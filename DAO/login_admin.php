@@ -1,17 +1,16 @@
 <?php
-
 require_once 'conexao.php';
 session_start();
 $mensagem = "";
 
-if (isset($_POST['email']) && isset($_POST['senha'])){
+if (isset($_POST['email']) && isset($_POST['senha'])) {
 
     $email = $mysqli->real_escape_string($_POST['email']);
     $senha = $mysqli->real_escape_string($_POST['senha']);
 
-    if(strlen($email) == 0){
+    if (strlen($email) == 0) {
         $mensagem = "Preencha seu email";
-    } else if(strlen($senha) == 0){
+    } else if (strlen($senha) == 0) {
         $mensagem = "Preencha sua senha";
     } else {
         $sql_code = "SELECT * FROM usuarios WHERE email_usuario = '$email' AND senha_usuario = '$senha'";
@@ -19,7 +18,7 @@ if (isset($_POST['email']) && isset($_POST['senha'])){
 
         $quantidadeRequisitos = $sql_query->num_rows;
 
-        if($quantidadeRequisitos == 1) {
+        if ($quantidadeRequisitos == 1) {
 
             $usuario = $sql_query->fetch_assoc();
             $_SESSION['email'] = $email;
@@ -28,284 +27,180 @@ if (isset($_POST['email']) && isset($_POST['senha'])){
             $_SESSION['idusuario'] = $usuario['idusuario'];
 
             header("Location: ../administracao/portalAdmin.php");
-
         } else {
             $mensagem = "Falha ao entrar! Email ou senha incorretos";
         }
     }
 }
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Morello - Login Administrativo</title>
-
     <style>
-
         @import url('https://fonts.googleapis.com/css?family=Poppins:400,700,900');
 
         * {
-            margin: 0px;
-            padding: 0px;
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
             list-style: none;
             text-decoration: none;
         }
-        
+
         body {
-            margin: 0;
-            padding: 0;
-            background-image: url('../componentes/imagens/login2.jpg');
-            background-size: cover;
-            background-position: center;
+            background: linear-gradient(120deg, #f6f9fc, #e9eff3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
-        button {
-        transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-        }
-
-        button:hover {
-        background-color: #0056b3;
-        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        input[type="text"]:focus,
-        input[type="password"]:focus,
-        input[type="email"]:focus {
-        border-color: blue;
-        box-shadow: 0px 0px 10px rgba(0, 0, 255, 0.2);
-        }
-
-        .recuo {
-            margin-top: 10px;
-            background-color: #74AFB2;
+        header {
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
 
         .navegacao {
-            background-color: rgba(255, 255, 255, 0.904);
+            background-color: #003366;
+            /* Azul escuro */
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 18px 40px;
-            box-shadow: 0 0.1rem 0.5rem #ccc;
-            width: 100%;
-        }
-
-        .nav-menu li a {
-            position: relative;
-        }
-
-        .nav-menu li a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -3px; /* Ajuste conforme necessário */
-            left: 0;
-            background-color: blue; /* Altere para a cor desejada */
-            visibility: hidden;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .nav-menu li a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -3px;
-            left: 0;
-            background-color: blue;
-            visibility: hidden;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .nav-menu li a:hover::after {
-            width: 100%;
-            visibility: visible;
-        }
-
-        .nav-menu li a:hover {
-            color: brown;
-            background-color: rgba(0, 0, 255, 0.1); /* Efeito de fundo ao passar o mouse */
-        }
-
-        .nav-menu li a:hover::after {
-            width: 100%;
-            visibility: visible;
+            padding: 20px 40px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .logo {
-            width: 50px;
+            width: 60px;
             height: auto;
         }
 
         .nav-menu {
             display: flex;
-            justify-content: center;
-            gap: 5rem;
-            list-style-type: none;
+            gap: 2rem;
+            list-style: none;
         }
 
         .nav-menu li a {
-            color: black;
-            font-size: 15px;
+            color: #fff;
+            /* Texto branco */
+            font-size: 16px;
             font-weight: 500;
             text-decoration: none;
-            transition: all 0.5s;
+            position: relative;
+            padding: 5px 0;
         }
 
-        .nav-menu li a:hover {
-            color: brown;
+        .nav-menu li a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: #fff;
+            /* Linha branca */
+            visibility: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .nav-menu li a:hover::after {
+            width: 100%;
+            visibility: visible;
         }
 
         .container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 40px;
-            padding: 0 20px;
+            padding: 40px;
+            max-width: 400px;
+            margin-top: 80px;
+            background: #fff;
+            /* Fundo branco para o formulário */
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
         }
 
         h2 {
-            text-align: center;
+            font-size: 32px;
+            color: #333;
             margin-bottom: 20px;
-            font-size: 40px;
         }
 
         form {
             width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
 
         label {
             display: block;
-            font-weight: bold;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
         }
 
-        input[type="text"],
-        input[type="password"],
-        input[type="email"] {
+        input[type="email"],
+        input[type="password"] {
             width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             box-sizing: border-box;
-            transition: border-color 0.3s ease-in-out; /* Adiciona uma transição suave */
-        }
-
-        input[type="text"],
-        input[type="password"],
-        select {
-            width: 100%;
-            padding: 10px;
             margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
 
-        input[type="text"]:focus,
-        input[type="password"]:focus,
-        input[type="email"]:focus {
-        border-color: blue;
-        box-shadow: 0px 0px 10px rgba(0, 0, 255, 0.2);
-        }
-
-        input[type="text"]:hover,
-        input[type="date"]:hover,
-        input[type="tel"]:hover,
-        input[type="email"]:hover,
-        input[type="password"]:hover,
-        select:hover {
-            background-color: rgba(0, 0, 255, 0.1); /* Efeito de fundo ao passar o mouse */
-        }
-
-        input[type="text"]:focus,
-        input[type="date"]:focus,
-        input[type="tel"]:focus,
         input[type="email"]:focus,
-        input[type="password"]:focus,
-        select:focus {
-            border-color: blue;
-            box-shadow: 0px 0px 10px rgba(0, 0, 255, 0.2);
-        }
-
-        input[type="text"]:hover,
-        input[type="password"]:hover,
-        input[type="email"]:hover {
-            border-color: blue; /* Cor da borda ao passar o mouse */
+        input[type="password"]:focus {
+            border-color: #003366;
+            /* Azul escuro */
+            box-shadow: 0 0 8px rgba(0, 51, 102, 0.3);
+            outline: none;
         }
 
         button {
             width: 100%;
-            padding: 10px;
-            background-color: #007bff;
+            padding: 15px;
+            background-color: #003366;
+            /* Azul escuro */
             color: #fff;
             border: none;
-            border-radius: 3px;
+            border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
         }
 
         button:hover {
-            background-color: #0056b3;
-        }
-
-        input[type="email"],
-        input[type="password"],
-        select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        input[type="submit"] {
-            width: 100%;
-            background-color: blue;
-            color: #fff;
-            border: none;
-            padding: 10px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-
-        p {
-            text-align: center;
+            background-color: #002244;
+            /* Azul ainda mais escuro */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         .error-message {
-            color: red;
-            font-weight: bold;
+            color: #d9534f;
+            font-weight: 600;
             text-align: center;
             margin: 10px 0;
             padding: 10px;
-            border: 2px solid red;
+            border: 2px solid #d9534f;
             border-radius: 5px;
-            background-color: #f8d7da;
+            background-color: #f9d6d5;
         }
     </style>
 </head>
+
 <body>
 
     <header>
-        <div class="recuo"></div>
         <nav class="navegacao">
             <img src="../componentes/imagens/logo2.png" alt="logo da empresa Morello com cores azuis" class="logo">
             <ul class="nav-menu">
@@ -317,32 +212,19 @@ if (isset($_POST['email']) && isset($_POST['senha'])){
     </header>
 
     <div class="container">
-        <h2>Login</h2>
+        <h2>Login Administrativo</h2>
 
         <form action="" method="POST">
 
             <div class="formulario">
-                <label for="email">Email:</label><br>
-                <input type="email" id="email" name="email" value="@gmail.com" required pattern="[a-zA-Z0-9._%+-]+@gmail\.com">
-                <span id="emailError" style="color: red; display: none;">O email deve ter o formato nomeusuario@gmail.com.</span><br>
-
-                <script>
-                    document.getElementById("email").addEventListener('input', function(e) {
-                        if (!/^[\w.%+-]+@gmail\.com$/.test(e.target.value)) {
-                            document.getElementById("emailError").style.display = 'inline';
-                            e.target.setCustomValidity("Formato de email inválido.");
-                        } else {
-                            document.getElementById("emailError").style.display = 'none';
-                            e.target.setCustomValidity("");
-                        }
-                    });
-                </script>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                <span id="emailError" style="color: red; display: none;">O email deve ter o formato nomeusuario@gmail.com.</span>
             </div>
 
             <div class="formulario">
                 <label for="senha">Senha:</label>
                 <input type="password" id="senha" name="senha" required>
-                <br><br>
             </div>
 
             <button type="submit">Login</button>
@@ -350,9 +232,20 @@ if (isset($_POST['email']) && isset($_POST['senha'])){
                 <p class="error-message"><?php echo $mensagem; ?></p>
             <?php endif; ?>
         </form>
-
-        <br>
     </div>
 
+    <script>
+        document.getElementById("email").addEventListener('input', function(e) {
+            if (!/^[\w.%+-]+@gmail\.com$/.test(e.target.value)) {
+                document.getElementById("emailError").style.display = 'inline';
+                e.target.setCustomValidity("Formato de email inválido.");
+            } else {
+                document.getElementById("emailError").style.display = 'none';
+                e.target.setCustomValidity("");
+            }
+        });
+    </script>
+
 </body>
+
 </html>
